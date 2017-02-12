@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <!-- <script src="angular.min.js"></script> -->
+</head>
+
+<body>
+    <script>
+    // angular.module("myApp",[])
+    // .controller('myCrl',function($scope,$http){
+    // 	$http.jsonp("http://127.0.0.1:9090/api/getindexmenu?callback=JSON_CALLBACK")
+    // 	.success(function(data) { 
+    // 		console.log(data);
+    // 	})
+    // });
+    function save2(a) {
+        var a = a.toString();
+        while (a.length < 4) {
+            if (a.length == 1) {
+                a += '.';
+            } else {
+                a += '0';
+            }
+        }
+        return a;
+    }
+
+    function go(a) {
+        var arr = [];
+
+        function get(k, num) {
+            if (num <= 1) {
+                var last = ~~(k * 100) / 100;
+                last = save2(last);
+                // console.log(last);
+                arr.push(last);
+                return;
+            }
+            var random, f0 = 0;
+            do {
+                random = ~~(Math.random() * 100);
+                while (random == 0) {
+                    random = ~~(Math.random() * 100);
+                }
+                random = '0.' + random;
+                f0 = (~~(random * (k / (num + 1) * num * 100))) / 100;
+            } while (f0 === 0);
+            f0 = save2(f0);
+            // console.log(f0);
+            var next = ((k * 100) - (f0 * 100)) / 100;
+            next = next.toFixed(2);
+            arr.push(f0);
+            get(next, num - 1);
+        }
+        get(5, 5);
+        while (isHasK(a, arr)) {
+            arr = [];
+            get(5, 5);
+        }
+        return arr;
+    }
+
+    function isHasK(k, arr) {
+    	var arr = getLast(arr);
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i] == k) {
+                return true;
+            }
+        }
+    }
+
+
+
+    function test() {
+
+    }
+    // 获取最后的数：
+    function getLast(arr) {
+        var newArr = [];
+        for (var i = 0; i < arr.length; i++) {
+            newArr.push(arr[i].slice(-1));
+        }
+        return newArr;
+    }
+
+    var numArr = {};
+    for (var i = 0; i < 10; i++) {
+        numArr[i] = 0;
+    }
+
+    for (var i = 0; i < 5000; i++) {
+    	//排除一个数
+        var lastArr = getLast(go(1));
+        for (var j = 0; j < lastArr.length; j++) {
+            numArr[lastArr[j]] += 1;
+        }
+    }
+
+
+    console.log(numArr);
+    //排除一个数
+    var good = go(1)
+    console.log(good);
+    console.log(getLast(good));
+    </script>
+</body>
+
+</html>
